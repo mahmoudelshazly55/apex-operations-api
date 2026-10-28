@@ -8,7 +8,7 @@ const pool = new Pool({
   host: process.env.DB_HOST || "localhost",
   port: Number(process.env.DB_PORT) || 5432,
   user: process.env.DB_USER || "apex",
-  password: process.env.DB_PASSWORD || "local_dev_only",
+  password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || "apex_operations",
   connectionTimeoutMillis: 3000
 });
