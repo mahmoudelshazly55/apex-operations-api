@@ -6,7 +6,7 @@ function createApp(db = null) {
 
   app.use(express.json());
 
-  // Structured request logs; never log secrets or request bodies.
+  // Structured request logs
   app.use((req, res, next) => {
     const startedAt = Date.now();
 
@@ -26,12 +26,21 @@ function createApp(db = null) {
     next();
   });
 
+  // Application health check
   app.get("/health", (req, res) => {
     res.status(200).json({
       status: "ok"
     });
   });
 
+  // Application version
+  app.get("/version", (req, res) => {
+    res.status(200).json({
+      version: process.env.APP_VERSION || "1.0.0"
+    });
+  });
+
+  // Database readiness check
   app.get("/ready", async (req, res) => {
     if (!db) {
       return res.status(503).json({
