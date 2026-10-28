@@ -1,13 +1,27 @@
 
-FROM node:24-alpine
+# Stage 1: Install production dependencies
+FROM node:24-alpine AS deps
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+
+# Stage 2: Runtime image
+FROM node:24-alpine AS runtime
 
 ENV NODE_ENV=production
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --chown=node:node package.json ./
+COPY --chown=node:node src/ ./src/
 
-COPY src/ ./src/
+# npm is not needed to run the application
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    /usr/local/bin/npm \
+    /usr/local/bin/npx
 
 USER node
 
