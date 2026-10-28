@@ -48,3 +48,5 @@ describe("Apex Operations API", () => {
     expect(response.status).toBe(200);
   });
 });
+
+describe('CI failure demonstration', () => { test('intentional failure', () => { expect(1).toBe(2); }); });
